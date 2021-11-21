@@ -6,7 +6,10 @@ def run_game
   choice = UserInterface.welcome
   if choice == 'start'
     player = UserInterface.start_game
-    ScoreCard.create(player)
+    game = ScoreCard.new_game(player)
+    roll = UserInterface.bowl
+    game.add_roll(roll)
+
   elsif choice == "quit"
     exit()
   else

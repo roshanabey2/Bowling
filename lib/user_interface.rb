@@ -31,7 +31,11 @@ class UserInterface
     return name
   end
 
-end
+  def self.bowl
+    print("Please input the pins knocked down this roll: ")
+    roll_score = gets.chomp.to_i
+  end
 
+end
 
 
