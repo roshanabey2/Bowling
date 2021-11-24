@@ -36,6 +36,12 @@ class UserInterface
     roll_score = gets.chomp.to_i
   end
 
+  def self.last_bowl
+    print("You hvae earnt an extra role\n")
+    print("Please input the pins knocked down this roll: ")
+    roll_score = gets.chomp.to_i
+  end
+
 end
 
 
