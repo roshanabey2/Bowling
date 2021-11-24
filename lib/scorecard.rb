@@ -1,6 +1,5 @@
 require "pg"
 
-
 $default_row = {"turn"=>0, "frame"=>1, "roll"=>1, "roll_score"=>0, "added_bonus"=>0, "frame_score"=>0, "total_score"=>0, "earned_bonus"=>"none"} 
 
 class ScoreCard
@@ -17,20 +16,16 @@ class ScoreCard
     @total_score = total_score.to_i
     @earned_bonus = earned_bonus
   end
-
-
-
-  def self.new_game(player_name)
+  
+  def self.new_game(player_name) #creates blank table for game
     connection = PG.connect(dbname: "bowling")
     connection.exec("TRUNCATE bowling_scorecard RESTART identity")
-    #sql piece of information
-   game =  ScoreCard.create(player_name, $default_row) #game -> controller expression ->in 
+    game =  ScoreCard.create(player_name, $default_row) #game -> controller expression ->in 
   end
 
-  def self.create(player_name, turn)
+  def self.create(player_name, turn) # screates a new scorecard for the player with default values 
     new_game = ScoreCard.new(player_name, turn['turn'], turn['frame'], turn['roll'],
       turn['roll_score'], turn['added_bonus'], turn['frame_score'], turn['total_score'], turn['earned_bonus'])
-    print ("#{new_game}"+"\n")
     new_game
   end
 
@@ -48,7 +43,7 @@ class ScoreCard
   end
 
 
-  def update_attributes()
+  def update_attributes() #updates the active scorecard for the player
     if  (@roll == 2) || (@earned_bonus == 'strike')
       @roll = $default_row['roll']
       @frame += 1
@@ -65,7 +60,7 @@ class ScoreCard
   end
 
 
-  def find_spares
+  def find_spares #checks database for spare
     connection = PG.connect(dbname: "bowling")
     spares = connection.query("SELECT * FROM bowling_scorecard WHERE earned_bonus = 'spare';")
     spares.each { |spare| add_spare_bonus(spare['turn']) }
@@ -73,7 +68,7 @@ class ScoreCard
 
   
 
-  def find_strikes
+  def find_strikes #checks database for strikes
     connection = PG.connect(dbname: "bowling")
     strikes = connection.query("SELECT * FROM bowling_scorecard WHERE earned_bonus = 'strike';")
     strikes.each { |strike| add_strike_bonus(strike['turn'], strike['frame'], strike['roll']) }
@@ -91,7 +86,7 @@ class ScoreCard
    connection.exec_params("INSERT INTO bowling_scorecard (frame,roll,roll_score,earned_bonus,frame_score,total_score) VALUES ($1,$2,$3,$4,$5,$6) RETURNING turn", [frame, roll, roll_score, earned_bonus, frame_score, total_score])
   end
 
-  def add_spare_bonus(turn)
+  def add_spare_bonus(turn) #adds the bonus values to the relevant row
     next_turn = turn.to_i + 1
     bonus = connection.query("SELECT * FROM bowling_scorecard WHERE turn = '#{next_turn}'").first
     @turn = turn
@@ -100,7 +95,7 @@ class ScoreCard
     connection.exec_params("UPDATE bowling_scorecard SET added_bonus = $1 WHERE turn = '#{turn}';", [@added_bonus])
   end
   
-  def add_strike_bonus(turn, frame, roll)
+  def add_strike_bonus(turn, frame, roll) #adds the bonus values to the relevant row
     @frame = frame.to_i
     @roll = roll.to_i
     @turn = turn.to_i
