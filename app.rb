@@ -2,6 +2,16 @@ require './lib/scorecard'
 require './lib/user_interface'
 
 
+#def bowl_ball(game)
+#  bowl = UserInterface.bowl
+ # game.add_roll(bowl)
+ # game.update_attributes
+ # last_roll = [game.roll, game.roll_score]
+ # return last_roll
+#end
+
+
+
 
 
 
@@ -13,9 +23,9 @@ def run_game
       game.add_roll(bowl)
       game.update_attributes
     end
-    last_roll = [game.frame, game.roll, game.roll_score]
+    last_roll = [game.roll, game.roll_score]
     print("#{last_roll}\n")
-    if last_roll == [11, 1, 10] 
+    if last_roll == [1, 10] 
       game.frame = 10
       game.roll = 2
       bowl = UserInterface.bowl
@@ -25,6 +35,7 @@ def run_game
       game.roll = 3
       bowl = UserInterface.last_bowl
       game.add_roll(bowl)
+      game.update_attributes
     elsif game.earned_bonus == 'spare'
       game.frame = 10
       game.roll = 3

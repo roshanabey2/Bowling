@@ -52,7 +52,6 @@ class ScoreCard
     if  (@roll == 2) || (@earned_bonus == 'strike')
       @roll = $default_row['roll']
       @frame += 1
-      @roll_score = $default_row['roll_score']
     else
       @roll = 2
     end
